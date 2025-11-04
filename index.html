@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Telly Counter</title>
+    <style>
+        :root {
+            --primary: #4a6cf7;
+            --primary-dark: #3a5ce5;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--secondary);
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            line-height: 1.4;
+        }
+
+        .counter-display {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .counter-value {
+            font-size: clamp(3rem, 15vw, 6rem);
+            font-weight: bold;
+            color: var(--primary);
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            line-height: 1;
+        }
+
+        .counter-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .btn {
+            padding: clamp(0.75rem, 3vw, 1rem) clamp(1rem, 4vw, 1.5rem);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-height: 50px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 108, 247, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover, .btn-secondary:focus {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover, .btn-success:focus {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover, .btn-danger:focus {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: var(--light);
+            padding: clamp(1.25rem, 4vw, 1.75rem);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+        }
+
+        .feature-card p {
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            line-height: 1.5;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .input-group input {
+            padding: clamp(0.75rem, 3vw, 1rem);
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            transition: var(--transition);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+        }
+
+        .input-group button {
+            border-radius: var(--border-radius);
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: var(--border-radius);
+        }
+
+        .history-item {
+            padding: clamp(0.75rem, 3vw, 1rem);
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            background: rgba(74, 108, 247, 0.05);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-time {
+            color: var(--secondary);
+            font-size: clamp(0.75rem, 2vw, 0.85rem);
+        }
+
+        .progress-container {
+            margin-top: 1rem;
+            background: #e9ecef;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.5s ease;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--secondary);
+            margin-top: 2rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            line-height: 1.5;
+        }
+
+        /* Extra Small Devices (Phones) */
+        @media (max-width: 576px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+            
+            .container {
+                padding: 1rem;
+                border-radius: 8px;
+            }
+            
+            .counter-display {
+                padding: 1.5rem 1rem;
+                margin: 1.5rem 0;
+            }
+            
+            .counter-buttons {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .btn {
+                min-height: 45px;
+            }
+            
+            .features {
+                gap: 1rem;
+            }
+            
+            .feature-card {
+                padding: 1.25rem;
+            }
+            
+            .input-group {
+                gap: 0.75rem;
+            }
+        }
+
+        /* Small Devices (Large Phones) */
+        @media (min-width: 577px) and (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .counter-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Medium Devices (Tablets) */
+        @media (min-width: 769px) and (max-width: 992px) {
+            .container {
+                max-width: 95%;
+            }
+            
+            .counter-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .feature-card:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* Large Devices (Desktops) */
+        @media (min-width: 993px) and (max-width: 1200px) {
+            .container {
+                max-width: 90%;
+            }
+            
+            .counter-buttons {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* Extra Large Devices (Large Desktops) */
+        @media (min-width: 1201px) {
+            .container {
+                max-width: 1200px;
+            }
+            
+            .counter-buttons {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* Ultra-wide Screens */
+        @media (min-width: 1600px) {
+            body {
+                padding: 3rem 2rem;
+            }
+            
+            .container {
+                max-width: 1400px;
+                padding: 3rem;
+            }
+            
+            .counter-value {
+                font-size: 7rem;
+            }
+            
+            .btn {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Landscape Orientation for Mobile */
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .counter-display {
+                margin: 1rem 0;
+                padding: 1rem;
+            }
+            
+            .counter-value {
+                font-size: 3rem;
+                margin: 0.5rem 0;
+            }
+            
+            .counter-buttons {
+                margin: 1rem 0;
+            }
+        }
+
+        /* High DPI Screens */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .btn {
+                border: 1px solid rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        /* Reduced Motion for Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .btn:hover, .btn:focus {
+                transform: none;
+            }
+            
+            .feature-card:hover {
+                transform: none;
+            }
+            
+            .progress-bar {
+                transition: none;
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --light: #2d3748;
+                --dark: #f7fafc;
+                --secondary: #a0aec0;
+            }
+            
+            body {
+                background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+                color: var(--dark);
+            }
+            
+            .container {
+                background: #4a5568;
+            }
+            
+            .counter-display {
+                background: #718096;
+            }
+            
+            .feature-card {
+                background: #718096;
+            }
+            
+            .input-group input {
+                background: #2d3748;
+                color: var(--dark);
+                border-color: #4a5568;
+            }
+            
+            .history-list {
+                border-color: #4a5568;
+            }
+            
+            .history-item {
+                border-color: #4a5568;
+            }
+            
+            .progress-container {
+                background: #4a5568;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .btn, .input-group, footer {
+                display: none;
+            }
+            
+            .container {
+                box-shadow: none;
+                border: 1px solid #000;
+            }
+            
+            body {
+                background: white !important;
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Modern Telly Counter</h1>
+            <p class="subtitle">A simple, elegant counter for all your counting needs</p>
+        </header>
+        
+        <div class="counter-display">
+            <div class="counter-value" id="counter" aria-live="polite" aria-atomic="true">0</div>
+            <div class="counter-buttons">
+                <button class="btn btn-primary" id="increment" aria-label="Increase counter">
+                    <span>+</span> Increment
+                </button>
+                <button class="btn btn-secondary" id="decrement" aria-label="Decrease counter">
+                    <span>-</span> Decrement
+                </button>
+                <button class="btn btn-success" id="save" aria-label="Save current value">
+                    <span>✓</span> Save Value
+                </button>
+                <button class="btn btn-danger" id="reset" aria-label="Reset counter to zero">
+                    <span>↺</span> Reset
+                </button>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <h3>⚙️ Set Custom Value</h3>
+                <p>Set the counter to a specific value</p>
+                <div class="input-group">
+                    <input type="number" id="customValue" placeholder="Enter value" aria-label="Enter custom counter value">
+                    <button class="btn btn-primary" id="setValue">Set</button>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <h3>📊 Counter History</h3>
+                <p>Recent counter changes</p>
+                <div class="history-list" id="historyList">
+                    <!-- History items will be added here -->
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🎯 Goal Tracker</h3>
+                <p>Set and track counting goals</p>
+                <div class="input-group">
+                    <input type="number" id="goalValue" placeholder="Set goal" aria-label="Set counting goal">
+                    <button class="btn btn-success" id="setGoal">Set Goal</button>
+                </div>
+                <div id="goalProgress" style="margin-top: 1rem;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Modern Telly Counter &copy; 2023 | Responsive design for all devices</p>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const counterElement = document.getElementById('counter');
+        const incrementBtn = document.getElementById('increment');
+        const decrementBtn = document.getElementById('decrement');
+        const resetBtn = document.getElementById('reset');
+        const saveBtn = document.getElementById('save');
+        const setValueBtn = document.getElementById('setValue');
+        const customValueInput = document.getElementById('customValue');
+        const historyList = document.getElementById('historyList');
+        const setGoalBtn = document.getElementById('setGoal');
+        const goalValueInput = document.getElementById('goalValue');
+        const goalProgressElement = document.getElementById('goalProgress');
+
+        // Counter state
+        let count = 0;
+        let history = [];
+        let goal = null;
+
+        // Safe localStorage functions
+        function safeSetStorage(key, value) {
+            try {
+                localStorage.setItem(key, value);
+                return true;
+            } catch (e) {
+                console.warn('localStorage set failed:', e);
+                return false;
+            }
+        }
+
+        function safeGetStorage(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                console.warn('localStorage get failed:', e);
+                return null;
+            }
+        }
+
+        // Initialize from localStorage if available
+        const savedCount = safeGetStorage('counter');
+        if (savedCount !== null) {
+            count = parseInt(savedCount);
+            if (isNaN(count)) count = 0;
+            updateCounter();
+        }
+
+        const savedHistory = safeGetStorage('counterHistory');
+        if (savedHistory) {
+            try {
+                history = JSON.parse(savedHistory);
+                updateHistory();
+            } catch (e) {
+                console.warn('Failed to parse history from localStorage:', e);
+                history = [];
+            }
+        }
+
+        const savedGoal = safeGetStorage('counterGoal');
+        if (savedGoal !== null) {
+            goal = parseInt(savedGoal);
+            if (!isNaN(goal)) {
+                goalValueInput.value = goal;
+                updateGoalProgress();
+            }
+        }
+
+        // Event Listeners
+        incrementBtn.addEventListener('click', () => {
+            count++;
+            updateCounter();
+            addHistory('Incremented');
+        });
+
+        decrementBtn.addEventListener('click', () => {
+            if (count > 0) {
+                count--;
+                updateCounter();
+                addHistory('Decremented');
+            } else {
+                // Visual feedback for trying to decrement below 0
+                counterElement.style.color = 'var(--danger)';
+                setTimeout(() => {
+                    counterElement.style.color = 'var(--primary)';
+                }, 300);
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset the counter?')) {
+                count = 0;
+                updateCounter();
+                addHistory('Reset');
+            }
+        });
+
+        saveBtn.addEventListener('click', () => {
+            addHistory('Saved');
+            // Visual feedback for save
+            saveBtn.innerHTML = '<span>✓</span> Saved!';
+            setTimeout(() => {
+                saveBtn.innerHTML = '<span>✓</span> Save Value';
+            }, 1000);
+        });
+
+        setValueBtn.addEventListener('click', () => {
+            const customValue = parseInt(customValueInput.value);
+            if (!isNaN(customValue) && customValue >= 0) {
+                const oldValue = count;
+                count = customValue;
+                updateCounter();
+                addHistory(`Set to ${customValue} (was ${oldValue})`);
+                customValueInput.value = '';
+            } else {
+                alert('Please enter a valid positive number');
+                customValueInput.focus();
+            }
+        });
+
+        setGoalBtn.addEventListener('click', () => {
+            const goalValue = parseInt(goalValueInput.value);
+            if (!isNaN(goalValue) && goalValue > 0) {
+                goal = goalValue;
+                safeSetStorage('counterGoal', goal);
+                updateGoalProgress();
+                // Visual feedback
+                setGoalBtn.innerHTML = 'Goal Set!';
+                setTimeout(() => {
+                    setGoalBtn.innerHTML = 'Set Goal';
+                }, 1000);
+            } else {
+                alert('Please enter a valid positive number');
+                goalValueInput.focus();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // + key for increment
+            if (e.key === '+' || e.key === '=') {
+                e.preventDefault();
+                incrementBtn.click();
+            }
+            // - key for decrement
+            else if (e.key === '-' || e.key === '_') {
+                e.preventDefault();
+                decrementBtn.click();
+            }
+            // r key for reset
+            else if (e.key === 'r' || e.key === 'R') {
+                e.preventDefault();
+                resetBtn.click();
+            }
+        });
+
+        // Functions
+        function updateCounter() {
+            counterElement.textContent = count;
+            safeSetStorage('counter', count);
+            
+            // Update goal progress if goal is set
+            if (goal !== null) {
+                updateGoalProgress();
+            }
+        }
+
+        function addHistory(action) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const historyItem = {
+                action: action,
+                value: count,
+                time: timeString
+            };
+            
+            history.unshift(historyItem);
+            
+            // Keep only last 10 history items
+            if (history.length > 10) {
+                history.pop();
+            }
+            
+            updateHistory();
+            safeSetStorage('counterHistory', JSON.stringify(history));
+        }
+
+        function updateHistory() {
+            historyList.innerHTML = '';
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="history-item">No history yet</div>';
+                return;
+            }
+            
+            history.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div>${item.action}</div>
+                    <div>
+                        <span>${item.value}</span>
+                        <span class="history-time">${item.time}</span>
+                    </div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        function updateGoalProgress() {
+            if (goal === null) return;
+            
+            const percentage = Math.min(Math.round((count / goal) * 100), 100);
+            
+            goalProgressElement.innerHTML = `
+                <div style="margin-bottom: 0.5rem;">
+                    <strong>Progress:</strong> ${count}/${goal} (${percentage}%)
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: ${percentage}%;"></div>
+                </div>
+            `;
+            
+            if (count >= goal) {
+                goalProgressElement.innerHTML += `
+                    <div style="color: var(--success); font-weight: bold; margin-top: 0.5rem;">
+                        🎉 Goal achieved! Well done!
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize
+        updateHistory();
+        updateGoalProgress();
+    </script>
+</body>
+</html>
